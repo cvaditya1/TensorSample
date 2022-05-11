@@ -1,7 +1,7 @@
 import keras.layers
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras import Sequential, datasets
+from tensorflow.keras import Sequential, datasets, callbacks
 from tensorflow.keras.layers import Dense, Flatten
 
 data = datasets.fashion_mnist
@@ -17,13 +17,22 @@ model = Sequential([input, l0, l1])
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
+
+class myCallback(callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        if logs.get('accuracy') > 0.95:
+            print('\nReached 95% accuracy so cancelling training')
+            self.model.stop_training = True
+
+
+callback = myCallback()
 # Create model
-model.fit(training_images, training_labels, epochs=50)
+model.fit(training_images, training_labels, epochs=50, callbacks=[callback])
 
 # Test the model
 model.evaluate(test_images, test_labels)
 
-#Exploring
+# Exploring
 classifications = model.predict(test_images)
 print(classifications[0])
 print(test_labels[0])
