@@ -1,0 +1,4 @@
+tensorflow
+tensorflow-hub
+scipy
+librosa
